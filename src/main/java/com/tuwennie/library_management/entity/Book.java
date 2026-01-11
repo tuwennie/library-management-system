@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "books")
-@Data // Lombok: Getter, Setter, toString metodlarını otomatik oluşturur
-@NoArgsConstructor // Parametresiz constructor
-@AllArgsConstructor // Tüm parametreleri alan constructor
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Book {
 
     @Id
@@ -25,7 +25,14 @@ public class Book {
     @Column(name = "isbn", unique = true)
     private String isbn;
 
-    // Soft delete için (Kitabı gerçekten silmeyiz, bu alanı false yaparız)
     @Column(name = "is_active")
-    private Boolean isActive = true; 
+    private Boolean isActive = true;
+
+    // BU METODU EKLEDİK: Kayıt yapılmadan hemen önce çalışır
+    @PrePersist
+    public void prePersist() {
+        if (this.isActive == null) {
+            this.isActive = true;
+        }
+    }
 }
