@@ -7,6 +7,7 @@ import com.tuwennie.library_management.repository.BookRepository;
 import com.tuwennie.library_management.repository.TransactionRepository;
 import com.tuwennie.library_management.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import com.tuwennie.library_management.exception.ResourceNotFoundException;
 
 import java.time.LocalDateTime;
 
@@ -27,15 +28,15 @@ public class TransactionService {
     public String borrowBook(Long userId, Long bookId) {
         // 1. Kullanıcıyı bul
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Kullanıcı bulunamadı! ID: " + userId));
 
         // 2. Kitabı bul
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("Kitap bulunamadı!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Kitap bulunamadı! ID: " + bookId));
 
         // 3. Kitap zaten başkasında mı?
         if (transactionRepository.existsByBookAndReturnDateIsNull(book)) {
-            return "Hata: Bu kitap şu an başkasında, ödünç alamazsınız.";
+            throw new IllegalStateException("Bu kitap şu an başkasında, ödünç alamazsınız.");
         }
 
         // 4. Her şey temiz, işlemi başlat
@@ -52,13 +53,13 @@ public class TransactionService {
     public String returnBook(Long userId, Long bookId) {
         // 1. Kullanıcı ve Kitabı bul
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Kullanıcı bulunamadı! ID: " + userId));
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("Kitap bulunamadı!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Kitap bulunamadı! ID: " + bookId));
 
         // 2. Bu kullanıcının bu kitapla ilgili açık bir işlemi var mı?
         Transaction transaction = transactionRepository.findByUserAndBookAndReturnDateIsNull(user, book)
-                .orElseThrow(() -> new RuntimeException("Hata: Bu kullanıcıda böyle ödünç alınmış bir kitap yok!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Bu kullanıcıda iade edilecek böyle bir kitap yok!"));
 
         // 3. İade tarihini bas ve kaydet (İşlemi kapat)
         transaction.setReturnDate(LocalDateTime.now());
