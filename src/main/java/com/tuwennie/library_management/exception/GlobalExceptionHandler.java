@@ -6,7 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ControllerAdvice // Bu anotasyon tüm Controller'ları dinlemesini sağlar
+// Sadece bizim paketimizin altındaki Controller'ları dinle
+@ControllerAdvice(basePackages = "com.tuwennie.library_management")
 public class GlobalExceptionHandler {
 
     // 1. Özel Yazdığımız "Bulunamadı" Hatasını Yakalar (404 Döndürür)

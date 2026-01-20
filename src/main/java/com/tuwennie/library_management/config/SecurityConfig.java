@@ -30,13 +30,21 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+                // Swagger İzinleri
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                
+                // Auth İzinleri
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/books/**").hasAnyRole("USER", "ADMIN")
+                
+                // İşlem (Transaction) İzinleri
                 .requestMatchers("/api/transactions/**").hasAnyRole("ADMIN", "USER")
+                
+                // Kitap İzinleri
+                .requestMatchers(HttpMethod.GET, "/api/books/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/books/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/books/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                
                 .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults());
@@ -46,8 +54,9 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        // DÜZELTME: UserDetailsService'i constructor içinde veriyoruz.
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
+        // DÜZELTME: Spring Boot 3 standardına geri döndük
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(); // Parantez içi BOŞ
+        provider.setUserDetailsService(userDetailsService); // Setter ile veriyoruz
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }

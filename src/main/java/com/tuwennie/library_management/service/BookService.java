@@ -4,7 +4,10 @@ import com.tuwennie.library_management.entity.Book;
 import com.tuwennie.library_management.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import java.util.List;
 
 @Service
@@ -13,9 +16,9 @@ public class BookService {
 
     private final BookRepository bookRepository;
 
-    // Tüm kitapları getir
-    public List<Book> getAllBooks() {
-        return bookRepository.findByIsActiveTrue();
+    public Page<Book> getAllBooks(int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return bookRepository.findAll(pageable);
     }
 
     // Yeni kitap kaydet

@@ -4,6 +4,7 @@ import com.tuwennie.library_management.entity.Book;
 import com.tuwennie.library_management.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -14,10 +15,13 @@ public class BookController {
 
     private final BookService bookService;
 
-    // 1. Tüm kitapları getiren uç (GET isteği)
+    // GET http://localhost:8080/api/books?page=0&size=5&sortBy=title
     @GetMapping
-    public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
+    public Page<Book> getAllBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
+        return bookService.getAllBooks(page, size, sortBy);
     }
 
     // 2. Yeni kitap ekleyen uç (POST isteği)
