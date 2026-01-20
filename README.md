@@ -1,11 +1,11 @@
 # Library Management System Backend
-```markdown
+
 ![Java](https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=java)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.2-brightgreen?style=for-the-badge&logo=spring)
 ![MySQL](https://img.shields.io/badge/MySQL-Database-blue?style=for-the-badge&logo=mysql)
 ![Docker](https://img.shields.io/badge/Docker-Container-blue?style=for-the-badge&logo=docker)
 ![Swagger](https://img.shields.io/badge/Swagger-API_Docs-green?style=for-the-badge&logo=swagger)
-```
+
 
 A robust, scalable, and secure RESTful API for managing library operations. This project demonstrates a complete backend architecture using **Java Spring Boot**, featuring advanced capabilities like containerization, API documentation, and secure authentication.
 
